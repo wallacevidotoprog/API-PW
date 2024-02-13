@@ -8,7 +8,6 @@ require('dotenv').config();
 server.use(express.json());
 server.use(routers);
 
-
 server.get("/verification",(req,res)=>{
     return res.status(200).send("true");
 })

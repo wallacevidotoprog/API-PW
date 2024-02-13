@@ -5,10 +5,8 @@ module.exports = (multer({
         destination: (req, file, cb) => {
             cb(null, process.env.DATAS)
         },
-        filename: (req, file, cb) => {
-            
-            cb(null, file.originalname)  
-            
+        filename: (req, file, cb) => {            
+            cb(null, file.originalname)              
         }
     })
 }));
