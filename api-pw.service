@@ -1,0 +1,14 @@
+[Unit]
+Description=ASYNC API PW
+After=network.target
+StartLimitIntervalSec=0
+[Service] 
+WorkingDirectory=/home/API 
+ExecStart=/usr/bin/node index.js 
+Restart=always 
+RestartSec=10 
+StandardOutput=syslog 
+StandardError=syslog 
+SyslogIdentifier= ASYNC-API-PW
+[Install]
+WantedBy=multi-user.target
