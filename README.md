@@ -63,7 +63,7 @@ Observe se o status está como active (running). Caso contrário, verifique o lo
 
 5. E se for necessário parar ou reiniciá-lo, use os comandos abaixo, respectivamente:
 # systemctl stop api-pw.service
-# systemctl restart sapi-pw.service
+# systemctl restart api-pw.service
 
 6. Caso queira saber quais outros serviços estão em execução no sistema operacional, basta apenas usar:
 # systemctl list-unit-files — type=service
