@@ -13,7 +13,7 @@ async function InfoAllData() {
     const sizeFiles = {};
     try {
         
-        const tempF = (await fs.readdir(datasFolder)).filter(f => path.extname(f) === '.data');
+        const tempF = (await fs.readdir(datasFolder)).filter(f => (path.extname(f) === '.data') || (path.extname(f) === '.sev'));
         if (tempF.length === 0) {
             console.error('InfoAllData -  if (tempF.length === 0)')
             return sizeFiles          

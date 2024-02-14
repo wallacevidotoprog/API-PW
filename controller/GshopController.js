@@ -181,7 +181,6 @@ class Sale {
             this.Vip_lvl = Vip_lvl
     }
 }
-
 class Categories {
     constructor(
         Category_name,
