@@ -47,25 +47,25 @@ SyslogIdentifier= ASYNC-API-PW
 [Install]   
 WantedBy=multi-user.target  
 
-2. Habilite o serviço criado com o seguinte comando:
+2. Habilite o serviço criado com o seguinte comando:    
 systemctl enable api-pw.service
-Se o usuário de acesso não tiver privilégios de administrador, use sudo antes de cada comando mencionado no texto.
+Se o usuário de acesso não tiver privilégios de administrador, use sudo antes de cada comando mencionado no texto.  
 
- Caso houver alteração do arquivo .service, execute a linha abaixo pra recarregar os ajustes:
-systemctl daemon-reload
+ Caso houver alteração do arquivo .service, execute a linha abaixo pra recarregar os ajustes:   
+systemctl daemon-reload 
 
-3. Inicie o serviço:
-systemctl start api-pw.service
+3. Inicie o serviço:    
+systemctl start api-pw.service  
 
-4. Verifique se o está em execução por:
-systemctl status api-pw.service
+4. Verifique se o está em execução por: 
+systemctl status api-pw.service 
 
-Observe se o status está como active (running). Caso contrário, verifique o log gerado a partir de:
-journalctl -u api-pw.service
+Observe se o status está como active (running). Caso contrário, verifique o log gerado a partir de: 
+journalctl -u api-pw.service    
 
-5. E se for necessário parar ou reiniciá-lo, use os comandos abaixo, respectivamente:
-systemctl stop api-pw.service
-systemctl restart api-pw.service
+5. E se for necessário parar ou reiniciá-lo, use os comandos abaixo, respectivamente:   
+systemctl stop api-pw.service   
+systemctl restart api-pw.service    
 
-6. Caso queira saber quais outros serviços estão em execução no sistema operacional, basta apenas usar:
-systemctl list-unit-files — type=service
+6. Caso queira saber quais outros serviços estão em execução no sistema operacional, basta apenas usar: 
+systemctl list-unit-files — type=service    
