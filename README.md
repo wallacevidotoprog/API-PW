@@ -16,6 +16,7 @@ git clone https://github.com/wallacevidotoprog/API-PW.git
 
 ## npm install --save multer
 ## npm install iconv
+## npm install enum
 
 Configuraçoes para criar um servico: ubunto/debian
 Procedimentos

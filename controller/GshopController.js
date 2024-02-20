@@ -3,6 +3,8 @@ const BinaryReader = require('../model/BinaryReader');
 const iconv = require('iconv-lite');
 const fs = require('fs').promises;
 const { Iconv } = require('iconv');
+const { throws } = require('assert');
+const file = process.env.FOLDER + "\\gamed\\config\\gshop.data"
 
 let TimeStamp = null;
 let Amount = null;
@@ -13,24 +15,22 @@ let Version = 0;
 
 async function ReadGshopData() {
     try {
-        await fs.readFile('./TESTEDATA/gshop.data').then((data) => {
+        await fs.readFile(file).then((data) => {
             const reader = new BinaryReader(data);
             TimeStamp = reader.readInt32();
             Amount = reader.readInt32();
             for (let index = 0; index < Amount; index++) {
-
                 const it = new Item()
                 it.Place = reader.readInt32();
 
                 Max_place = index;
                 it.Item_category = reader.readInt32();
                 it.Item_sub_category = reader.readInt32();
-                it.Icon = iconv.decode(reader.readBytes(128), 'cp936').split('\0')[0];;
-
+                it.Icon = iconv.decode(reader.readBytes(128), 'cp936').split('\0')[0];
                 it.id = reader.readInt32();
                 it.amount = reader.readInt32();
 
-                for (let index = 0; index < 4; index++) {
+                for (let x = 0; x < 4; x++) {
                     const sl = new Sale();
                     sl.Price = reader.readInt32()
                     sl.Selling_end_time = reader.readInt32();
@@ -42,9 +42,12 @@ async function ReadGshopData() {
                         sl.Day = reader.readInt32();
                         sl.Status = reader.readInt32();
                         sl.Flags = reader.readInt32();
+                        if (Version >= 5) {
+                            sl.Vip_lvl = reader.ReadInt32();
+                        }
                     }
                     else {
-                        if (index == 0) {
+                        if (x == 0) {
                             sl.Control = -1;
                         }
                         else {
@@ -58,7 +61,7 @@ async function ReadGshopData() {
                 }
 
                 it.Explanation = iconv.decode(reader.readBytes(1024), 'cp936').trimEnd('\0').replace(/\0/g, '');
-                it.name = iconv.decode(reader.readBytes(64), 'cp936').trimEnd('\0').replace(/\0/g, '');
+                it.name = iconv.decode(reader.readBytes(64), 'cp936').split('\0')[0]//.trimEnd('\0').replace(/\0/g, '');
 
                 if (Version >= 2) {
                     it.Gift_id = reader.readInt32();
@@ -69,10 +72,10 @@ async function ReadGshopData() {
                     it.ILogPrice = reader.readInt32();
                 }
 
-                it.OwnerNpcs;
+                it.OwnerNpcs = [8];
                 if (Version >= 4) {
-                    for (let index = 0; index < 8; index++) {
-                        it.OwnerNpcs.push(reader.readInt32());
+                    for (let ind = 0; ind < 8; ind++) {
+                        it.OwnerNpcs[ind] = (reader.readInt32());
                     }
                 }
                 if (Version >= 5) {
@@ -83,36 +86,42 @@ async function ReadGshopData() {
                     it.Class = reader.readInt32();
                 }
 
-                // if (it.Item_category > 7 || it.Item_sub_category > 8 || it.Place < 0)
-                // {
-                //     throw new Exception();
-                // }
+                if (it.Item_category > 7 || it.Item_sub_category > 8 || it.Place < 0) {
+                    console.log('ERRO : if (it.Item_category > 7 || it.Item_sub_category > 8 || it.Place < 0)')
+                    throws;
+                }
                 it.Place = index;
                 List_items.push(it);
             }
-            
+
+            for (let i = 0; i < List_items.length; i++) {
+                List_items[i].Place = i
+            }
+
             for (let index = 0; index < 8; index++) {
                 const Ct = new Categories();
-                //let name = iconv.decode(reader.readBytes(128), 'cp936');
-                //let name =reader.readBytes(128);
-                let name =reader.readStringUnicode(128);
+                let name = reader.readStringUnicode(128);
                 Ct.Category_name = name == null ? '' : name;
                 console.log(name);
                 Ct.Amount = reader.readInt32();
 
                 for (let index = 0; index < Ct.Amount; index++) {
-                    Ct.Sub_categories.push(iconv.decode(reader.readBytes(128), 'cp936'));
+                    Ct.Sub_categories.push(reader.readStringUnicode(128).split('\0'));
+                    //console.log( Ct.Sub_categories[index]);
+                    //Ct.Sub_categories.push(iconv.decode(reader.readBytes(128), 'cp936'));
                 }
                 List_categories.push(Ct);
             }
 
+
             console.log("\x1b[33m[Read.data]\x1b[36m gshop OK \x1b[0m");
         }).catch((err) => {
-            console.error("\x1b[33m[Read.data]\x1b[31mRead gshop.data Err( await fs.readFile):=>" + err + "\x1b[0m"); 
+            console.error("\x1b[33m[Read.data]\x1b[31mRead gshop.data Err( await fs.readFile):=>" + err + "\x1b[0m");
         })
     } catch (error) {
         console.error("\x1b[33m[Read.data]\x1b[31mRead gshop.data Err(Try):=>" + error + "\x1b[0m");
     }
+
 }
 
 class Item {
@@ -192,7 +201,7 @@ class Categories {
         this.Sub_categories = Sub_categories;
     }
 }
-ReadGshopData();
+//ReadGshopData();
 
 module.exports = {
     Gshop: async (req, res) => {
